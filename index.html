@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Tab</title>
+  <style>
+    :root {
+      --main-bg-color: 0, 0, 0 !important;
+      --main-fg-color: 255, 255, 255 !important;
+      --main-accent: 140, 0, 26 !important;
+      --accent-1: 167, 192, 128 !important;
+      --accent-2: 230, 126, 128 !important;
+      --accent-3: 127, 187, 179 !important;
+      --accent-4: 214, 153, 182 !important;
+      --accent-5: 198, 160, 246 !important;
+      --panel-opacity: 0.3 !important;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-wrapper input[type="search"] {
+      width: 100%;
+      padding: 12px 20px 12px 50px;
+      font-size: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.9);
+      outline: none;
+      transition: all 0.3s ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    .search-wrapper .google-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.8);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .form-container input[type="search"]::-webkit-search-decoration,
+    .form-container input[type="search"]::-webkit-search-cancel-button,
+    .form-container input[type="search"]::-webkit-search-results-button,
+    .form-container input[type="search"]::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+    }
+
+    .form-container input[type="search"]:focus {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .form-container input[type="search"]::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .suggestions-container {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .suggestion-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.2s ease;
+    }
+
+    .suggestion-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-form {
+      width: 100%;
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .search-input-wrapper:hover,
+    .search-input-wrapper:focus-within {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .google-icon {
+      color: rgba(255, 255, 255, 0.8);
+      margin-right: 12px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .search-input-wrapper input[type="search"] {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+      width: 100%;
+      min-width: 200px;
+      font-family: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    .search-input-wrapper input[type="search"]::-webkit-search-decoration,
+    .search-input-wrapper input[type="search"]::-webkit-search-cancel-button,
+    .search-input-wrapper input[type="search"]::-webkit-search-results-button,
+    .search-input-wrapper input[type="search"]::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+    }
+
+    .search-input-wrapper input[type="search"]::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+      opacity: 1;
+    }
+
+    .search-input-wrapper input[type="search"]:focus::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .collection-links-wrapper:nth-child(1) .link:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(var(--accent-1));
+      text-shadow: 0 0 8px rgb(var(--accent-1)), 0 0 16px rgb(var(--accent-1), 0.5);
+    }
+    .collection-links-wrapper:nth-child(2) .link:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(var(--accent-2));
+      text-shadow: 0 0 8px rgb(var(--accent-2)), 0 0 16px rgb(var(--accent-2), 0.5);
+    }
+    .collection-links-wrapper:nth-child(3) .link:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(var(--accent-3));
+      text-shadow: 0 0 8px rgb(var(--accent-3)), 0 0 16px rgb(var(--accent-3), 0.5);
+    }
+    .collection-links-wrapper:nth-child(4) .link:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(var(--accent-4));
+      text-shadow: 0 0 8px rgb(var(--accent-4)), 0 0 16px rgb(var(--accent-4), 0.5);
+    }
+    .collection-links-wrapper:nth-child(5) .link:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(var(--accent-5));
+      text-shadow: 0 0 8px rgb(var(--accent-5)), 0 0 16px rgb(var(--accent-5), 0.5);
+    }
+  </style>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@900&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/outlawishhh/VoidFox@main/assets/styles.css"
+  />
+  <link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/outlawishhh/VoidFox@main/assets/images/favicon.jpg" />
+</head>
+
+<body tabindex="-1">
+  <main class="container">
+    <section class="left-section">
+      <div class="image-wrapper">
+        <style>
+          .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+          }
+        </style>
+
+        <div class="image" alt="image">
+        
+          <!--images available are 
+          1.jpg
+          2.jpg
+          3.jpg
+          4.jpg
+          -->
+          <!-- <img src="https://cdn.jsdelivr.net/gh/outlawishhh/VoidFox@main/assets/images/1.jpg" alt="image" />  -->
+        <img src="https://raw.githubusercontent.com/outlawishhh/VoidFox/main/assets/images/2.jpg" alt="image" />
+
+        </div>
+        <div class="image-border">
+          <div class="squiggly"></div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="right-section">
+      <section class="top-section">
+        <div class="date-wrapper" style="text-align:center; margin-bottom: 1em;">
+          <iframe 
+            src="https://free.timeanddate.com/clock/i9ykptjg/n176/fn6/fs16/fcfff/tc000/ftb/pa8/tt0/tw1/th1/ta1/tb4" 
+            frameborder="0" 
+            width="208" 
+            height="53"
+            style="display:block;margin:auto;">
+          </iframe>
+        </div>
+        <div class="form-container">
+          <form class="search-form" action="https://www.google.com/search" method="GET">
+            <div class="search-wrapper">
+              <svg
+                class="google-icon"
+                version="1.0"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.2em"
+                height="1.2em"
+                viewBox="0 0 300.000000 300.000000"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <g
+                  transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="50"
+                >
+                  <path
+                    d="M1400 2970 c-649 -64 -1167 -526 -1312 -1171 -20 -90 -23 -131 -23 -304 0 -155 4 -219 18 -285 123 -577 547 -1019 1108 -1155 333 -80 699 -40 999 110 263 131 471 339 600 600 69 139 101 230 129 372 42 206 46 395 13 588 l-7 40 -693 3 -692 2 0 -290 0 -290 395 0 c217 0 395 -4 395 -8 0 -25 -37 -126 -67 -184 -87 -166 -252 -290 -462 -345 -134 -36 -357 -39 -476 -6 -309 84 -529 296 -622 600 -24 80 -27 102 -27 248 0 146 3 168 27 248 91 296 300 501 603 593 79 24 105 27 234 27 128 0 155 -3 233 -27 102 -30 204 -80 269 -129 l45 -35 218 218 217 217 -74 55 c-151 114 -265 176 -426 232 -189 66 -428 95 -622 76z m336 -39 c152 -22 294 -65 430 -131 97 -47 281 -167 289 -189 4 -10 -53 -74 -182 -203 l-187 -187 -36 21 c-145 89 -257 131 -388 149 -397 53 -762 -147 -944 -515 -18 -36 -36 -65 -40 -64 -10 4 -358 270 -375 287 -8 7 -16 11 -19 8 -3 -3 90 -78 206 -167 127 -98 207 -165 200 -170 -56 -35 -66 -416 -13 -527 9 -20 12 -38 7 -43 -5 -4 -110 -85 -233 -179 l-224 -171 -29 82 c-93 261 -103 319 -102 578 1 203 1 207 37 342 20 76 45 157 57 179 11 23 23 57 26 76 6 33 7 33 30 18 13 -8 24 -11 24 -5 0 5 -5 10 -10 10 -29 0 36 124 134 255 67 88 208 222 312 296 290 207 674 300 1030 250z m1159 -1205 c18 -18 35 -146 35 -269 0 -81 -28 -309 -44 -362 -1 -5 -10 -37 -20 -70 -22 -75 -74 -209 -99 -255 -27 -50 -60 -104 -66 -110 -4 -3 -13 -18 -21 -33 -8 16 -25 -40 -37 -53 -13 -14 -23 -28 -23 -32 0 -4 -14 -20 -31 -37 -17 -16 -45 -47 -62 -67 -36 -44 -43 -45 -77 -18 -14 11 -109 86 -213 166 -169 132 -202 164 -163 164 23 0 132 108 174 173 47 72 89 167 98 224 11 68 17 67 -387 68 -315 0 -360 2 -374 16 -23 22 -35 446 -15 484 l13 25 649 0 c533 0 652 -2 663 -14z m-2169 -628 c55 -110 88 -155 189 -253 173 -171 378 -255 620 -255 174 0 308 27 436 90 35 17 67 26 77 22 16 -6 139 -95 175 -127 9 -8 62 -49 116 -90 128 -97 127 -96 93 -124 -147 -122 -341 -220 -532 -270 -291 -77 -620 -54 -905 62 -55 22 -126 55 -159 73 -102 55 -253 173 -344 269 -80 84 -201 251 -230 318 -14 33 -14 33 79 104 35 27 114 87 174 133 61 46 112 86 115 89 7 9 44 30 52 30 4 1 24 -32 44 -71z"
+                  />
+                </g>
+              </svg>
+              <input 
+                type="search" 
+                id="search-input"
+                name="q"
+                placeholder="Search the web" 
+                autocomplete="off"
+              >
+            </div>
+          </form>
+        </div>
+      </section>
+      
+      <div class="links-section">
+        <div class="bg">
+          <div class="squiggly"></div>
+        </div>
+        <div class="border">
+          <ul class="collection-links-container">
+            <!-- Socials Collection (7 items) -->
+            <li class="collection-links-wrapper">
+              <h3 class="collection-title">Lorem</h3>
+              <ul class="links-container">
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Lorem</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Ipsum</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Dolor</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Sit</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Amet</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Consectetur</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Adipiscing</a>
+                </li>
+              </ul>
+            </li>
+            
+            <!-- Code Collection (7 items) -->
+            <li class="collection-links-wrapper">
+              <h3 class="collection-title">Ipsum</h3>
+              <ul class="links-container">
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Elit</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Sed</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Do</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Eiusmod</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Tempor</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">incididunt</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Ut</a>
+                </li>
+              </ul>
+            </li>
+            
+            <!-- VDP Collection (7 items) -->
+            <li class="collection-links-wrapper">
+              <h3 class="collection-title">Dolor</h3>
+              <ul class="links-container">
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Sit</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Amet</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Consectetur</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Adipiscing</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Eiusmod</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Tempor</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1"> incididunt</a>
+                </li>
+              </ul>
+            </li>
+            
+            <!-- OSINT Collection (7 items) -->
+            <li class="collection-links-wrapper">
+              <h3 class="collection-title">Lorem</h3>
+              <ul class="links-container">
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Ipsum</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Dolor</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Sit</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Amet</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Consectetur</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Adipiscing</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Elit</a>
+                </li>
+              </ul>
+            </li>
+            
+            <!-- Misc Collection (7 items) -->
+            <li class="collection-links-wrapper">
+              <h3 class="collection-title">Lorem</h3>
+              <ul class="links-container">
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Ipsum</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Dolor</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Sit</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Amet</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Consectetur</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Adipiscing</a>
+                </li>
+                <li class="link-wrapper" tabindex="0">
+                  <a href="https://google.com" class="link" tabindex="-1">Elit</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
