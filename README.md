@@ -33,7 +33,6 @@ https://github.com/user-attachments/assets/46c9f9d4-d269-4ad6-a6d3-a222719636cf
 4. In the URL field, paste your GitHub Pages deployment link:
 ```text
 https://outlawishhh.github.io/VoidFox/
-
 ```
 
 
